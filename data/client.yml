@@ -1,0 +1,19 @@
+client:
+  name: "{add name}"
+  phone: "{add phone}"
+  email: "{add email}"
+  address: "{add address}"
+  website: "{add website}"
+  social:
+    facebook: "https://www.facebook.com/..."
+    instagram: "https://www.instagram.com/..."
+    twitter: "https://www.instagram.com/..."
+    youtube: "https://www.youtube.com/channel/..."
+
+color:
+  body_bg: "#f2f2f2"
+  body_text: "#444"
+  blue: "#4169E1"
+
+templates:
+  "Email Template 1": "/templates/email-template-1.html"

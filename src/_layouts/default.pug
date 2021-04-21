@@ -1,0 +1,35 @@
+mjml(owa="desktop")
+  mj-head
+    block title
+      mj-title #{client.name} Email Template
+
+    mj-font(
+      name="Open Sans",
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
+    )
+
+    mj-attributes
+      mj-all(
+        color=`${color.body_text}`,
+        font-size="16px",
+        font-family="Open Sans",
+        line-height="1.5"
+      )
+      mj-section(background-color="#fff")
+      block mj-attributes
+
+    block styles
+      mj-style(inline="inline").
+        a {
+          color: #{color.blue};
+          font-weight: 700;
+        }
+
+  mj-body(background-color=`${color.body_bg}`)
+    block header
+      include ../_includes/header
+
+    block content
+
+    block footer
+      include ../_includes/footer

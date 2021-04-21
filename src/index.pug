@@ -1,0 +1,14 @@
+extends _layouts/default
+
+block content
+  mj-section
+    mj-column
+      mj-text
+        h3 #{client.name} Templates
+        ol
+          each url, title in templates
+            li
+              a(href=url)= title
+
+block footer
+  //- no footer

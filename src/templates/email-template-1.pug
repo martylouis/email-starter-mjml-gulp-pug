@@ -1,0 +1,20 @@
+extends ../_layouts/default
+include ../_mixins/button
+
+block title
+  mj-title Email Template 1
+
+block content
+  - console.log(client);
+  mj-section
+    mj-column
+      mj-text
+        p Hi,
+        :markdown-it
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magnam molestias maiores ex voluptatibus, repellendus inventore nostrum alias corrupti aliquid soluta?
+
+      +button('Click Me!', color.blue, 'https://example.com')
+
+      mj-text
+        :markdown-it
+          Lorem ipsum dolor sit [amet consectetur adipisicing](https://example.com) elit. Excepturi nemo, iusto earum sequi quae blanditiis ex repudiandae architecto voluptate, veniam quo. Assumenda corporis laboriosam, quidem debitis unde esse numquam id? 🤓

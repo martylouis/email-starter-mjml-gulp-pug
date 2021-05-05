@@ -3,6 +3,7 @@ const mjmlGulp = require("gulp-mjml");
 const mjml = require("mjml");
 const pug = require("gulp-pug");
 const fs = require("fs");
+const del = require("del");
 const yaml = require("js-yaml");
 const yamlMerge = require("gulp-yaml-merge");
 const data = require("gulp-data");
@@ -59,7 +60,11 @@ gulp.task("buildMjml", () => {
   );
 });
 
-gulp.task("buildHtml", () => {
+gulp.task("clean:html", () => {
+  return del([paths.html]);
+});
+
+gulp.task("build:html", () => {
   const options = {
     validationLevel: "strict",
   };

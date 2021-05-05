@@ -61,6 +61,10 @@ gulp.task("build:mjml", () => {
     .pipe(gulp.dest(paths.mjml.dest));
 });
 
+gulp.task("clean:tmp", () => {
+  return del([paths.tmp]);
+});
+
 gulp.task("clean:html", () => {
   return del([paths.html]);
 });
@@ -110,6 +114,7 @@ gulp.task("watch", () => {
 gulp.task(
   "build",
   gulp.series(
+    "clean:tmp",
     "clean:html",
     "merge:data",
     "build:mjml",

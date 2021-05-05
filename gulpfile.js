@@ -11,53 +11,54 @@ const rename = require("gulp-rename");
 const bs = require("browser-sync");
 const robots = require("gulp-robots");
 
-const srcFiles = [
-  "./src/**/*.pug",
-  "./src/templates/*.pug",
-  "!./src/_*/",
-  "!./src/_*/**/*",
-  "!./src/**/_*/",
-  "!./src/**/_*/**/*",
-];
-
-const mjmlFiles = {
-  src: "./.tmp/mjml/**/*.mjml",
-  dest: "./.tmp/mjml",
+const paths = {
+  data_src: "./data/*.yml",
+  pug: {
+    watch: "./src/**/*.pug",
+    build: [
+      "./src/**/*.pug",
+      "./src/templates/*.pug",
+      "!./src/_*/",
+      "!./src/_*/**/*",
+      "!./src/**/_*/",
+      "!./src/**/_*/**/*",
+    ],
+  },
+  mjml: {
+    src: "./.tmp/mjml/**/*.mjml",
+    dest: "./.tmp/mjml",
+  },
+  html: "./html",
+  tmp: "./.tmp",
 };
 
-const htmlPath = "./html";
-const dataFiles = "./data/*.yml";
-
-gulp.task("mergeData", () => {
+gulp.task("merge:data", () => {
   return gulp
-    .src(dataFiles)
+    .src(paths.data_src)
     .pipe(yamlMerge("data.bundle.yaml"))
-    .pipe(gulp.dest("./.tmp/"));
+    .pipe(gulp.dest(paths.tmp));
 });
 
-const load_data = () => {
-  const yml = fs.readFileSync("./.tmp/data.bundle.yaml", "utf8");
-  return yaml.load(yml);
+const getDataBundle = () => {
+  const yml_bundle = fs.readFileSync(`${paths.tmp}/data.bundle.yaml`, "utf8");
+  return yaml.load(yml_bundle);
 };
 
-gulp.task("buildMjml", () => {
-  return (
-    gulp
-      .src(srcFiles)
-      .pipe(data(load_data))
-      .pipe(
-        pug({
-          pretty: true,
-        })
-      )
-      .pipe(
-        rename({
-          extname: ".mjml",
-        })
-      )
-      // .pipe(htmlmin({ collapseWhitespace: true }))
-      .pipe(gulp.dest(mjmlFiles.dest))
-  );
+gulp.task("build:mjml", () => {
+  return gulp
+    .src(paths.pug.build)
+    .pipe(data(getDataBundle))
+    .pipe(
+      pug({
+        pretty: true,
+      })
+    )
+    .pipe(
+      rename({
+        extname: ".mjml",
+      })
+    )
+    .pipe(gulp.dest(paths.mjml.dest));
 });
 
 gulp.task("clean:html", () => {
@@ -70,28 +71,28 @@ gulp.task("build:html", () => {
   };
 
   return gulp
-    .src(mjmlFiles.src)
+    .src(paths.mjml.src)
     .pipe(mjmlGulp(mjml, options))
-    .pipe(gulp.dest(htmlPath));
+    .pipe(gulp.dest(paths.html));
 });
 
-gulp.task("robots", () => {
+gulp.task("build:robots", () => {
   return gulp
-    .src(["./html/**/index.html"])
+    .src([`${paths.html}/**/index.html`])
     .pipe(
       robots({
         useragent: "*",
         disallow: ["/"],
       })
     )
-    .pipe(gulp.dest(["./html/"]));
+    .pipe(gulp.dest([paths.html]));
 });
 
 gulp.task("browser-sync", (cb) => {
   bs.init(
     {
       server: {
-        baseDir: htmlPath,
+        baseDir: paths.html,
       },
       port: 3000,
       open: false,
@@ -102,13 +103,19 @@ gulp.task("browser-sync", (cb) => {
 
 gulp.task("watch", () => {
   return gulp
-    .watch("./src/**/**/*.pug", gulp.series("buildMjml", "buildHtml"))
+    .watch(paths.pug.watch, gulp.series("build:mjml", "build:html"))
     .on("change", bs.reload);
 });
 
 gulp.task(
   "build",
-  gulp.series("mergeData", "buildMjml", "buildHtml", "robots")
+  gulp.series(
+    "clean:html",
+    "merge:data",
+    "build:mjml",
+    "build:html",
+    "build:robots"
+  )
 );
 
 gulp.task("default", gulp.series("build", "browser-sync", "watch"));

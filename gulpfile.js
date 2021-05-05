@@ -7,7 +7,6 @@ const yaml = require("js-yaml");
 const yamlMerge = require("gulp-yaml-merge");
 const data = require("gulp-data");
 const rename = require("gulp-rename");
-const htmlmin = require("gulp-htmlmin");
 const bs = require("browser-sync");
 const robots = require("gulp-robots");
 
@@ -94,19 +93,6 @@ gulp.task("browser-sync", (cb) => {
     },
     cb
   );
-});
-
-gulp.task("minifyHtml", () => {
-  return gulp
-    .src("html/**/*.html")
-    .pipe(
-      htmlmin({
-        collapseWhitespace: true,
-        collapseInlineTagWhitespace: true,
-        minifyCSS: true,
-      })
-    )
-    .pipe(gulp.dest(".tmp/html/min/"));
 });
 
 gulp.task("watch", () => {
